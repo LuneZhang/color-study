@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "target": "ES2023", "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "module": "ESNext", "moduleResolution": "Bundler", "jsx": "react-jsx",
+    "strict": true, "esModuleInterop": true, "skipLibCheck": true,
+    "resolveJsonModule": true, "allowImportingTsExtensions": true, "noEmit": true,
+    "types": ["node", "vite/client"], "baseUrl": ".",
+    "paths": { "@color-study/shared": ["packages/shared/src/index.ts"] }
+  },
+  "include": ["packages", "scripts", "tests", "*.ts"]
+}

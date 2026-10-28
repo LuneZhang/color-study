@@ -1,0 +1,35 @@
+import { afterEach, expect, test } from 'vitest';
+import { mkdtempSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { Store, entity } from '../packages/server/src/db/store';
+import { FeedService } from '../packages/server/src/feeds/service';
+import { canonicalUrl, isPublicAddress, validateTarget } from '../packages/server/src/network';
+import type { Source } from '@color-study/shared';
+const roots: string[] = [];
+afterEach(() => { for (const root of roots.splice(0)) rmSync(root, { recursive: true, force: true }); });
+test('rejects private, reserved and mapped private addresses', async () => {
+  for (const address of ['127.0.0.1', '10.2.3.4', '192.168.1.1', '169.254.169.254', '::1', '::ffff:127.0.0.1', '0.0.0.0']) expect(isPublicAddress(address)).toBe(false);
+  expect(isPublicAddress('1.1.1.1')).toBe(true);
+  await expect(validateTarget('http://127.0.0.1:4317')).rejects.toThrow();
+  await expect(validateTarget('http://127.0.0.1:4317', true)).resolves.toBeDefined();
+  await expect(validateTarget('http://192.168.1.1', true)).rejects.toThrow();
+  expect(canonicalUrl('https://example.org/watch?v=123&utm_source=rss#chapter')).toBe('https://example.org/watch?v=123');
+});
+test('RSS and Atom ingestion is idempotent and preserves cross-source provenance', async () => {
+  const root = mkdtempSync(join(tmpdir(), 'color-study-feeds-')); roots.push(root);
+  const store = new Store(root); const service = new FeedService(store);
+  const source: Source = { ...entity({ name: 'fixture', url: 'https://example.org/feed', siteUrl: 'https://example.org', enabled: true, rights: 'metadata' }), lastAttempt: '', lastSuccess: '', nextCheck: '', error: '', errorCount: 0, etag: '', lastModified: '' };
+  store.put('sources', source);
+  const rss = '<rss version="2.0"><channel><title>Feed</title><link>https://example.org</link><description>x</description><item><guid>a</guid><title>风光</title><link>https://example.org/a</link></item></channel></rss>';
+  expect(await service.importXml(source, rss)).toBe(1);
+  expect(await service.importXml(source, rss)).toBe(0);
+  expect(await service.importXml(source, rss)).toBe(0);
+  const other = { ...source, id: 'source-b', url: 'https://example.org/atom' }; store.put('sources', other);
+  const atom = '<feed xmlns="http://www.w3.org/2005/Atom"><title>Atom</title><id>feed</id><updated>2026-01-01T00:00:00Z</updated><entry><title>风光</title><id>b</id><link href="https://example.org/a"/><updated>2026-01-01T00:00:00Z</updated></entry></feed>';
+  expect(await service.importXml(other, atom)).toBe(0);
+  expect(store.list('library')).toHaveLength(1);
+  expect(store.db.prepare('SELECT * FROM source_entries').all()).toHaveLength(2);
+  await expect(service.importXml(source, '<!DOCTYPE foo><rss/>')).rejects.toThrow();
+  store.remove('sources', source.id); expect(store.list('library')).toHaveLength(1); store.close();
+});

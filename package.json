@@ -1,0 +1,66 @@
+{
+  "name": "color-study",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "overrides": {
+    "esbuild": "^0.28.2"
+  },
+  "scripts": {
+    "dev": "vite --config packages/web/vite.config.ts",
+    "dev:server": "tsx watch packages/server/src/index.ts",
+    "build": "npm run check && vite build --config packages/web/vite.config.ts",
+    "build:pages": "npm run check && vite build --config packages/web/vite.config.ts",
+    "start": "vite preview --config packages/web/vite.config.ts --host 127.0.0.1 --port 4317 --strictPort",
+    "preview": "vite preview --config packages/web/vite.config.ts",
+    "fetch:feeds": "node scripts/fetch-feeds.mjs",
+    "check": "tsc --noEmit",
+    "test": "vitest run",
+    "test:e2e": "playwright test"
+  },
+  "dependencies": {
+    "@fontsource-variable/geist": "^5.2.6",
+    "@hono/node-server": "^1.19.0",
+    "@napi-rs/keyring": "2.1.2",
+    "@phosphor-icons/react": "^2.1.10",
+    "better-sqlite3": "^12.4.1",
+    "busboy": "^1.6.0",
+    "hono": "^4.10.0",
+    "ipaddr.js": "^2.2.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "react-markdown": "^10.1.0",
+    "react-router-dom": "^7.9.6",
+    "rss-parser": "^3.13.0",
+    "sharp": "^0.35.5",
+    "undici": "^7.16.0",
+    "yauzl": "^3.2.0",
+    "yazl": "^3.3.1",
+    "zod": "^4.1.12"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.56.1",
+    "@tailwindcss/vite": "^4.1.17",
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/busboy": "^1.5.4",
+    "@types/node": "^24.10.0",
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.2",
+    "@types/yauzl": "^2.10.3",
+    "@types/yazl": "^3.3.0",
+    "@vitejs/plugin-react": "^5.1.0",
+    "concurrently": "^9.2.1",
+    "tailwindcss": "^4.1.17",
+    "tsup": "^8.5.0",
+    "tsx": "^4.20.6",
+    "typescript": "~5.9.3",
+    "vite": "^7.2.2",
+    "vitest": "^4.0.8"
+  }
+}

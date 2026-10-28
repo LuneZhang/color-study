@@ -1,0 +1,253 @@
+[
+  {
+    "title": "曲线：黑场、白场与中间调",
+    "subtitle": "先理解曲线在重映射亮度，而不是单纯“加对比”",
+    "category": "曲线",
+    "tools": [
+      "曲线",
+      "Camera Raw",
+      "Photoshop"
+    ],
+    "body": "## 它在做什么\n\nRGB 曲线的横轴是输入亮度，纵轴是输出亮度。把左下角的点往右移，比它更暗的输入都会压到黑场；把右上角的点往左移，比它更亮的输入都会抬到白场。中间的曲线决定其余亮度如何重新分布。\n\n## 常见误解\n\n曲线不只是“加对比”的滑块。改变黑场或白场会直接裁掉暗部或高光信息；把中间调整体上提，也不是简单提亮，而是改变不同亮度之间的间距。\n\n## 在 Camera Raw 里怎么用\n\n先用基础面板把整体曝光和白平衡处理到合理范围，再在曲线里处理影调分配。先移动端点还是先调中间点，应根据画面缺黑、缺白，还是中间调发灰来判断。\n\n> 本卡说明通用原理，不给出固定参数；具体界面术语以你当前 Camera Raw 版本为准。",
+    "sources": [
+      {
+        "title": "darktable 用户手册：RGB curve",
+        "url": "https://docs.darktable.org/usermanual/5.6/en/module-reference/processing-modules/rgb-curve/"
+      }
+    ],
+    "relatedTutorialIds": [],
+    "id": "k1"
+  },
+  {
+    "title": "RGB 通道曲线为什么会改变颜色",
+    "subtitle": "三条通道各管一块颜色，曲线也能做颜色偏移",
+    "category": "曲线",
+    "tools": [
+      "曲线",
+      "RGB",
+      "Camera Raw"
+    ],
+    "body": "## 它在做什么\n\nRGB 图像由红、绿、蓝三个通道叠成。分别修改某一条通道的曲线，会改变该颜色在各亮度段的强度，因此画面会出现偏色。例如抬高蓝通道的暗部，阴影会更容易偏蓝。\n\n## 和明暗曲线的区别\n\nRGB 复合曲线同时影响三个通道，主要处理整体明暗与对比；单通道曲线可以处理颜色和局部色调，但也更容易让中性灰或肤色出现不想要的偏色。\n\n## 先检查什么\n\n如果只是想让天空更蓝，先分清是“蓝色不够饱和”“高光泛白”还是“整体色温偏暖”。通道曲线不是唯一的工具，也可能是过度操作。\n\n> 本卡只解释机制。不同软件对曲线端点和插值的处理不完全一致。",
+    "sources": [
+      {
+        "title": "darktable 用户手册：RGB curve",
+        "url": "https://docs.darktable.org/usermanual/5.6/en/module-reference/processing-modules/rgb-curve/"
+      }
+    ],
+    "relatedTutorialIds": [],
+    "id": "k2"
+  },
+  {
+    "title": "HSL 与 HSV：Lightness 和 Value 不是同一件事",
+    "subtitle": "同名“亮度”在两个颜色模型里含义不同",
+    "category": "色彩模型",
+    "tools": [
+      "HSL",
+      "HSV",
+      "Camera Raw"
+    ],
+    "body": "## HSL\n\nHSL 由色相（Hue）、饱和度（Saturation）和亮度（Lightness）组成。这里的 Lightness 通常表示颜色在黑与白之间的位置。\n\n## HSV\n\nHSV 由色相、饱和度和明度（Value）组成。Value 更接近“这个颜色本身有多亮”，与纯黑、纯白的混合方式不同。\n\n## 为什么值得分清\n\n很多软件面板叫 HSL，教程却用 HSV 色轮解释；它们都能描述颜色，但坐标含义不完全一样。看到“把明度拉高”时，要先确认说的是哪套模型、哪个工具，而不是直接套数值。\n\n## 在 ACR 中\n\nCamera Raw 的颜色混合器使用色相、饱和度、明亮度三组控制。中文界面里的“明亮度”不等同于把这张照片整体提亮；它是针对某个色相范围的明度调整。",
+    "sources": [
+      {
+        "title": "Krita 文档：Color models",
+        "url": "https://docs.krita.org/en/general_concepts/colors/color_models.html"
+      },
+      {
+        "title": "GIMP 术语表",
+        "url": "https://docs.gimp.org/3.0/en/glossary.html"
+      }
+    ],
+    "relatedTutorialIds": [],
+    "id": "k3"
+  },
+  {
+    "title": "色相、饱和度、明亮度各改变什么",
+    "subtitle": "颜色混合器的三个旋钮，不是三个“更鲜艳”按钮",
+    "category": "HSL",
+    "tools": [
+      "HSL",
+      "颜色混合器",
+      "Camera Raw"
+    ],
+    "body": "## 三组控制\n\n- **色相**：把某个颜色范围转向另一个色相，例如黄绿转向更纯的绿。\n- **饱和度**：改变该色相范围的鲜艳程度；降到很低会趋近灰色。\n- **明亮度**：改变该色相范围的明暗，不等于调整整张照片的曝光。\n\n## 颜色混合器的边界\n\n它按颜色范围选择，不按物体选择。改变绿色范围时，草地、绿衣服和绿色招牌可能一起变化；真正只想动某个物体，通常需要结合局部蒙版或对象选择。\n\n## 常见误区\n\n“让蓝色更纯净”不一定是增加蓝色饱和度。蓝色可能混有青色或紫色、可能被黄色环境光污染，也可能只是明度太亮。先判断问题，再决定用色相、饱和度、明度还是白平衡。",
+    "sources": [
+      {
+        "title": "Krita 文档：Color models",
+        "url": "https://docs.krita.org/en/general_concepts/colors/color_models.html"
+      },
+      {
+        "title": "darktable 用户手册：RGB curve",
+        "url": "https://docs.darktable.org/usermanual/5.6/en/module-reference/processing-modules/rgb-curve/"
+      }
+    ],
+    "relatedTutorialIds": [],
+    "id": "k4"
+  },
+  {
+    "title": "白平衡：色温和色调在做什么",
+    "subtitle": "把光源造成的整体偏色拉回可解释的起点",
+    "category": "白平衡",
+    "tools": [
+      "白平衡",
+      "色温",
+      "色调",
+      "Camera Raw"
+    ],
+    "body": "## 它在做什么\n\n白平衡调整用于补偿拍摄光源的色偏。色温通常沿蓝与黄方向调整，色调通常沿绿与洋红方向调整。具体数值方向和相机配置文件有关，不同软件不一定完全一致。\n\n## 为什么先做\n\n白平衡会影响整张图的颜色关系。如果一开始就大幅调整 HSL 或颜色分级，后续再改白平衡，之前的颜色判断可能全部要重做。实践中通常先确定中性色和整体色偏，再处理局部颜色。\n\n## 不要追求唯一数值\n\n日落、烛光、霓虹环境本来就有颜色。白平衡的目标不是把所有照片都校正成“标准白光”，而是决定哪些偏色要保留、哪些要消除，并与你的表达一致。",
+    "sources": [
+      {
+        "title": "darktable 用户手册：white balance",
+        "url": "https://docs.darktable.org/usermanual/5.6/en/module-reference/processing-modules/white-balance/"
+      }
+    ],
+    "relatedTutorialIds": [],
+    "id": "k5"
+  },
+  {
+    "title": "白平衡不是“把白物体变成白色”",
+    "subtitle": "中性参考、环境光和创作意图要分开看",
+    "category": "白平衡",
+    "tools": [
+      "白平衡",
+      "色温",
+      "灰卡"
+    ],
+    "body": "## 常见误解\n\n白平衡工具可以帮助你判断中性灰或白色区域的颜色偏差，但画面里“看起来是白色”的物体不一定真的中性：白墙可能被夕阳染暖，白衣服也可能反射周围环境色。\n\n## 怎么判断\n\n优先寻找不受强烈环境光影响的中性参考，或使用拍摄时的灰卡。没有可靠参考时，白平衡就是创作选择，而不是有一个绝对正确的数值。\n\n## 和肤色\n\n校正环境色并不等于把皮肤调成统一色号。肤色会受血色、光线、妆容与个人差异影响；人像教程里的“标准肤色”应当理解为某种光线条件下的参考，不是所有人的目标值。",
+    "sources": [
+      {
+        "title": "darktable 用户手册：white balance",
+        "url": "https://docs.darktable.org/usermanual/5.6/en/module-reference/processing-modules/white-balance/"
+      }
+    ],
+    "relatedTutorialIds": [],
+    "id": "k6"
+  },
+  {
+    "title": "颜色分级：阴影、中间调、高光",
+    "subtitle": "分区着色与全局白平衡不是同一个操作",
+    "category": "颜色分级",
+    "tools": [
+      "颜色分级",
+      "分离色调",
+      "Camera Raw"
+    ],
+    "body": "## 它在做什么\n\n颜色分级把不同亮度范围分别推向不同颜色，例如阴影偏青、高光偏暖。它改变的是特定影调区域的颜色倾向，常用于建立画面氛围。\n\n## 与白平衡的区别\n\n白平衡是整体色偏校正；颜色分级是主动为不同亮度区域着色。两者叠加过多，容易出现脏色或颜色不统一，所以应先确定白平衡，再控制分级的强度。\n\n## 与 HSL 的区别\n\nHSL 按色相范围调整已有颜色；颜色分级按影调范围添加颜色倾向。一个物体落在哪个亮度区间、原本是什么颜色，都会影响你看到的结果。具体控制和命名以当前 Camera Raw 版本为准。",
+    "sources": [
+      {
+        "title": "darktable 用户手册：color balance RGB",
+        "url": "https://docs.darktable.org/usermanual/5.6/en/module-reference/processing-modules/color-balance-rgb/"
+      }
+    ],
+    "relatedTutorialIds": [],
+    "id": "k7"
+  },
+  {
+    "title": "饱和度与彩度不是同义词",
+    "subtitle": "“更鲜艳”可以有很多种做法，结果并不一样",
+    "category": "色彩模型",
+    "tools": [
+      "饱和度",
+      "自然饱和度",
+      "彩度"
+    ],
+    "body": "## 两个相关但不同的概念\n\n饱和度通常描述颜色的鲜艳程度；彩度（chroma）描述颜色偏离中性灰的程度。不同软件和色彩模型对这两个词的定义并不完全一致，因此在教程里看到“提高彩度”时，要先看它在哪个工具、哪个模型中操作。\n\n## 实践中的区别\n\n全局饱和度会同时影响所有颜色，容易让本来已经很艳的区域过头；按颜色范围调整可以只处理目标色相，但也会波及同色的其他物体。局部蒙版则按空间选择，适合只想改变某一区域的情况。\n\n## 判断顺序\n\n先问自己：问题是颜色不够纯、亮度不对，还是环境色污染？如果分不清，先读取颜色或对比参考，不要直接把饱和度拉高。",
+    "sources": [
+      {
+        "title": "darktable 用户手册：color balance RGB",
+        "url": "https://docs.darktable.org/usermanual/5.6/en/module-reference/processing-modules/color-balance-rgb/"
+      },
+      {
+        "title": "Krita 文档：Color models",
+        "url": "https://docs.krita.org/en/general_concepts/colors/color_models.html"
+      }
+    ],
+    "relatedTutorialIds": [],
+    "id": "k8"
+  },
+  {
+    "title": "参数蒙版与几何蒙版",
+    "subtitle": "按颜色/亮度选择，和按位置/范围选择，解决的是不同问题",
+    "category": "蒙版",
+    "tools": [
+      "蒙版",
+      "参数蒙版",
+      "Camera Raw"
+    ],
+    "body": "## 几何蒙版\n\n线性渐变、径向渐变、画笔和对象选择等，主要根据位置或形状限定调整区域。适合天空、地面、脸部和局部光效。\n\n## 参数蒙版\n\n参数蒙版根据颜色、亮度等属性选择像素，例如只选偏蓝且较暗的区域。它更像“按条件筛选”，不要求你手动画出边界。\n\n## 组合使用\n\n两种选择可以叠加，但每增加一个条件都要重新检查边缘与误选。Camera Raw 的蒙版工具名称与具体参数会随版本变化；学习时先理解“为什么选这块区域”，再迁移到当前界面。\n\n## 人像提醒\n\n肤色范围蒙版可以缩小调整范围，但肤色会随光线变化，不能把它当成自动识别“脸”的工具。",
+    "sources": [
+      {
+        "title": "darktable 用户手册：parametric masks",
+        "url": "https://docs.darktable.org/usermanual/5.6/en/darkroom/masking-and-blending/masks/parametric/"
+      }
+    ],
+    "relatedTutorialIds": [],
+    "id": "k9"
+  },
+  {
+    "title": "颜色混合器与局部蒙版：按颜色还是按区域",
+    "subtitle": "同一个“只改草地”的目标，可以有两种完全不同的路径",
+    "category": "蒙版",
+    "tools": [
+      "HSL",
+      "颜色混合器",
+      "蒙版",
+      "Camera Raw"
+    ],
+    "body": "## 按颜色\n\n颜色混合器选择某个色相范围，影响画面中所有落入该范围的颜色。它适合统一调整“所有植被的颜色”，但无法自动区分草地和绿色衣服。\n\n## 按区域\n\n局部蒙版选择特定空间或物体，只影响选中的位置。它适合“只改这片天空”或“只改人物的脸”，但需要额外的选择操作和边缘检查。\n\n## 怎么选\n\n- 目标本身就是一个颜色类别，且画面里没有会误伤的同色物体：颜色混合器更直接。\n- 目标只在某个位置，或需要保护同色其他区域：局部蒙版更可靠。\n- 两者可以组合，但要避免同时对同一区域做方向相反的调整。\n\n> 本文不提供固定参数；界面和工具位置请以当前 Camera Raw 版本及作者教程为准。",
+    "sources": [
+      {
+        "title": "darktable 用户手册：parametric masks",
+        "url": "https://docs.darktable.org/usermanual/5.6/en/darkroom/masking-and-blending/masks/parametric/"
+      }
+    ],
+    "relatedTutorialIds": [],
+    "id": "k10"
+  },
+  {
+    "title": "RGB 互补色：从白色里减去",
+    "subtitle": "红与青、绿与洋红、蓝与黄，是加色模型中的互补关系",
+    "category": "配色",
+    "tools": [
+      "色轮",
+      "RGB",
+      "互补色"
+    ],
+    "body": "## 它在说什么\n\n在 RGB 加色模型中，两种颜色以适当比例混合得到白色，就可以称为互补色。常见对应是红与青、绿与洋红、蓝与黄。\n\n## 和颜料配色不同\n\n颜料混合更接近减色模型，传统色轮中的互补关系（如红与绿）与 RGB 屏幕的互补关系不一定相同。看到“互补色”时必须先确认讨论的是光源、屏幕还是颜料。\n\n## 对调色的意义\n\n互补关系可以帮助你判断偏色方向，但它不是一键修复规则。例如画面发黄时，增加蓝色是否合适，还取决于黄色来自白平衡、环境光还是某个物体的固有色。",
+    "sources": [
+      {
+        "title": "GIMP 术语表",
+        "url": "https://docs.gimp.org/3.0/en/glossary.html"
+      },
+      {
+        "title": "Krita 文档：Color models",
+        "url": "https://docs.krita.org/en/general_concepts/colors/color_models.html"
+      }
+    ],
+    "relatedTutorialIds": [],
+    "id": "k11"
+  },
+  {
+    "title": "色轮上的 H+180° 不是颜料互补规则",
+    "subtitle": "本站色轮是 HSV 色相环，只表示该模型中的角度关系",
+    "category": "配色",
+    "tools": [
+      "色轮",
+      "HSV",
+      "互补色",
+      "类似色"
+    ],
+    "body": "## 本站怎么画\n\n色彩速查中的色轮使用 HSV 色相环：互补色取当前色相 H+180°，保持饱和度和明度；类似色取当前色相前后 ±30°；分裂互补取 H+150° 与 H+210°。这些角度只是在 HSV 模型里的几何关系。\n\n## 它不代表什么\n\n它不代表颜料混合的 RYB 规则，也不代表某个具体品牌色卡的标准配色。屏幕上的 RGB 互补关系和传统美术色轮可以给出不同结果。\n\n## 使用边界\n\n色轮适合建立“方向感”和查找相邻/相对色相，但不能直接推出 Camera Raw 的滑块参数。人像肤色尤其不应套用统一的标准色相数值；先观察当前光线和肤色，再决定是否调整。",
+    "sources": [
+      {
+        "title": "Krita 文档：Color models",
+        "url": "https://docs.krita.org/en/general_concepts/colors/color_models.html"
+      },
+      {
+        "title": "GIMP 术语表",
+        "url": "https://docs.gimp.org/3.0/en/glossary.html"
+      }
+    ],
+    "relatedTutorialIds": [],
+    "id": "k12"
+  }
+]

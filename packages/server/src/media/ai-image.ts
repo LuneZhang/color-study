@@ -1,0 +1,1 @@
+export { makeAiImage } from './images';

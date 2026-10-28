@@ -1,0 +1,53 @@
+import { afterEach, expect, test } from 'vitest';
+import { Hono } from 'hono';
+import { mkdtempSync, rmSync } from 'node:fs';
+import { join } from 'node:path';
+import { tmpdir } from 'node:os';
+import { Store } from '../packages/server/src/db/store';
+import { createTutorialRouter } from '../packages/server/src/tutorials/catalog';
+import { createLibraryRouter } from '../packages/server/src/tutorials/library';
+import { createKnowledgeRouter } from '../packages/server/src/knowledge/routes';
+import { AppError } from '../packages/server/src/errors';
+const roots: string[] = [];
+afterEach(() => { for (const root of roots.splice(0)) rmSync(root, { recursive: true, force: true }); });
+function appFor(store: Store) {
+  const app = new Hono();
+  app.route('/api/tutorials', createTutorialRouter(store));
+  app.route('/api/library', createLibraryRouter(store));
+  app.route('/api/knowledge', createKnowledgeRouter(store));
+  app.onError((error, c) => c.json({ error: { code: error instanceof AppError ? error.code : 'ERROR', message: error.message } }, (error instanceof AppError ? error.status : 500) as 400));
+  return app;
+}
+const tutorial = { title: '曲线教程', url: 'https://example.org/curve?utm_source=test', author: '作者', topic: 'general', tools: ['曲线'], summary: '简介' };
+test('tutorial URL is canonicalized, duplicate is a readable conflict, and recommendation requires content scope', async () => {
+  const root = mkdtempSync(join(tmpdir(), 'color-study-catalog-')); roots.push(root);
+  const store = new Store(root); const app = appFor(store);
+  const created = await app.request('/api/tutorials', { method: 'POST', body: JSON.stringify(tutorial), headers: { 'content-type': 'application/json' } });
+  expect(created.status).toBe(201); const item = await created.json();
+  expect(item.url).toBe('https://example.org/curve'); expect(item.quality).toBe('candidate');
+  const duplicate = await app.request('/api/tutorials', { method: 'POST', body: JSON.stringify({ ...tutorial, url: 'https://example.org/curve' }), headers: { 'content-type': 'application/json' } });
+  expect(duplicate.status).toBe(409);
+  const metadataReview = await app.request(`/api/tutorials/${item.id}/reviews`, { method: 'POST', body: JSON.stringify({ scope: 'metadata', verdict: 'recommended', evidence: '只检查了标题和作者页面，不应直接推荐。' }), headers: { 'content-type': 'application/json' } });
+  expect(metadataReview.status).toBe(400);
+  const review = await app.request(`/api/tutorials/${item.id}/reviews`, { method: 'POST', body: JSON.stringify({ scope: 'content', verdict: 'recommended', evidence: '阅读了完整正文操作段落，确认包含可跟随的曲线操作与解释。' }), headers: { 'content-type': 'application/json' } });
+  expect(review.status).toBe(201);
+  const detail = await (await app.request(`/api/tutorials/${item.id}`)).json();
+  expect(detail.tutorial.quality).toBe('recommended'); expect(detail.reviews).toHaveLength(1);
+  store.close();
+});
+test('paired RAW requires permission evidence and library feed/manual views are separated', async () => {
+  const root = mkdtempSync(join(tmpdir(), 'color-study-catalog-')); roots.push(root);
+  const store = new Store(root); const app = appFor(store);
+  const paired = await app.request('/api/tutorials', { method: 'POST', body: JSON.stringify({ ...tutorial, rawStatus: 'paired', rawUrl: 'https://example.org/raw.dng', rawEvidence: '作者配套', rights: '' }), headers: { 'content-type': 'application/json' } });
+  expect(paired.status).toBe(400);
+  const linked = await app.request('/api/tutorials', { method: 'POST', body: JSON.stringify({ ...tutorial, rawStatus: 'paired', rawUrl: 'https://example.org/raw.dng', rawEvidence: '作者页面明确提供这份 DNG 并邀请跟练', rights: '仅个人学习，作者未授权再分发' }), headers: { 'content-type': 'application/json' } });
+  expect(linked.status).toBe(201);
+  const manual = await app.request('/api/library', { method: 'POST', body: JSON.stringify({ title: '我的作品', url: 'https://example.org/work', topic: 'landscape' }), headers: { 'content-type': 'application/json' } });
+  expect(manual.status).toBe(201);
+  store.db.prepare("INSERT INTO library(id,data) VALUES (?,?)").run('feed-1', JSON.stringify({ id: 'feed-1', title: '订阅候选', url: 'https://example.org/feed', author: '来源', topic: 'general', tags: [], summary: '', favorite: false, tutorialIds: [], thumbnailAssetId: null, publishedAt: '2026-01-01', origin: 'feed', createdAt: '2026-01-01', updatedAt: '2026-01-01' }));
+  expect((await (await app.request('/api/library')).json()).items.map((item: { title: string }) => item.title)).toEqual(['我的作品']);
+  expect((await (await app.request('/api/library?origin=feed')).json()).items.map((item: { title: string }) => item.title)).toEqual(['订阅候选']);
+  store.db.prepare("UPDATE library SET data=json_set(data,'$.origin','manual') WHERE id='feed-1'").run();
+  expect((await (await app.request('/api/library')).json()).total).toBe(2);
+  store.close();
+});

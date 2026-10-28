@@ -1,0 +1,16 @@
+[
+  {
+    "name": "PIXLS.US",
+    "url": "https://pixls.us/feed.xml",
+    "siteUrl": "https://pixls.us/",
+    "enabled": true,
+    "rights": "RSS 仅订阅标题、链接与日期；图片权利未逐项确认，不自动复制或缓存图像。"
+  },
+  {
+    "name": "Strobist",
+    "url": "https://feeds.feedburner.com/blogspot/WOBq",
+    "siteUrl": "https://strobist.blogspot.com/",
+    "enabled": true,
+    "rights": "RSS 仅订阅标题、链接与日期；图片权利未逐项确认，不自动复制或缓存图像。"
+  }
+]
