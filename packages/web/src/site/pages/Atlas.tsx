@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, type PointerEvent } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { ArrowUpRight, CaretDown, Sparkle } from '@phosphor-icons/react';
+import { CaretDown, Sparkle } from '@phosphor-icons/react';
 import { useAssistant, usePage } from '../AssistantContext';
 import { knowledge, type KnowledgeCard } from '../data';
 import { Empty, External, PageHead, Prose, Search } from '../ui';
@@ -19,7 +19,7 @@ export function Atlas() {
   const categories = useMemo(() => ['全部', ...new Set(knowledge.map(card => card.category))], []);
   const cards = knowledge.filter(card => (category === '全部' || card.category === category) && [card.title, card.subtitle, card.body, ...card.tools].join(' ').toLowerCase().includes(query.trim().toLowerCase()));
   return <div className="page atlas-page">
-    <PageHead kicker="COLOR ATLAS" title="色彩手册" description="有来源的概念、工具区别和常见误解。先用它建立判断，再去教程里跟练。" actions={<span className="count">{knowledge.length} 张卡</span>} />
+    <PageHead kicker="COLOR ATLAS" title="色彩手册" actions={<span className="count">{knowledge.length} 张卡</span>} />
     <Wheel />
     <div className="atlas-layout">
       <aside className="atlas-index"><div className="index-title">目录</div>{categories.map(item => <button key={item} className={category === item ? 'active' : ''} onClick={() => setCategory(item)}>{item}<span>{item === '全部' ? knowledge.length : knowledge.filter(card => card.category === item).length}</span></button>)}</aside>

@@ -51,7 +51,7 @@ test('home and tutorial library have a clear path and honest filters', async ({ 
 test('a tutorial opens to a readable source-first page, and notes/status/favorites persist', async ({ page }) => {
   await page.goto('/#/library/t1');
   await expect(page.getByRole('heading', { name: /HDR Landscape/ })).toBeVisible();
-  await expect(page.getByText('先把话说明白')).toBeVisible();
+  await expect(page.getByText('审核记录')).toBeVisible();
   await expect(page.getByRole('link', { name: /去作者原站/ })).toHaveAttribute('href', /^https:\/\//);
   const note = page.getByLabel('学习笔记');
   await note.fill('先合并曝光，再决定天空和前景谁更亮。');

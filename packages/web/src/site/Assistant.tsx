@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowUpRight, Images, PaperPlaneTilt, Quotes, Stop, X } from '@phosphor-icons/react';
+import { Images, PaperPlaneTilt, Quotes, Stop, X } from '@phosphor-icons/react';
 import { readSse } from '../lib/sse';
 import { useAssistant } from './AssistantContext';
 import { readApiKey, useAi } from './store';
@@ -84,7 +84,7 @@ export function Assistant() {
           { role: 'user', content: images.length ? [{ type: 'text', text: packet }, ...images.map(url => ({ type: 'image_url', image_url: { url } }))] : packet },
         ] }),
       });
-      if (!response.ok) throw new Error(response.status === 401 ? '密钥被拒绝（401）。请检查 Key。' : response.status === 403 ? '服务商拒绝浏览器直连（403），可能需要自建代理。' : `服务返回 ${response.status}。请检查地址、模型与额度。`);
+      if (!response.ok) throw new Error(response.status === 401 ? '密钥被拒绝（401）。' : response.status === 403 ? '服务商拒绝直连（403），请检查代理地址。' : `服务返回 ${response.status}。`);
       const type = response.headers.get('content-type') ?? '';
       if (type.includes('text/event-stream') && response.body) {
         for await (const item of readSse(response.body)) { const delta = contentOf(item.data); if (delta) { received += delta; setStream(received); } }
@@ -106,7 +106,6 @@ export function Assistant() {
     <aside className="assistant-panel" aria-label="学习答疑">
       <header className="assistant-head"><div><span className="assistant-mark" aria-hidden /><div><h2>学习答疑</h2><p>{configured ? ai.model : '未连接 AI 服务'}</p></div></div><button className="icon-button" onClick={() => !busy && state.setOpen(false)} aria-label="关闭"><X size={19} /></button></header>
       <div className="assistant-log">
-        {!messages.length && !stream && <div className="assistant-intro"><p>针对当前页面提问。AI 只补充解释，不替你改写作者教程。</p><div className="prompt-list">{(state.pageTitle.includes('色彩') ? ['HSL 和色轮是什么关系？', '互补色能直接对应滑块吗？'] : ['这条教程适合现在的我吗？', '我应该先观察画面里的什么？']).map(prompt => <button key={prompt} onClick={() => setDraft(prompt)}>{prompt}<ArrowUpRight size={14} /></button>)}</div></div>}
         {messages.map((message, index) => <article className={`message ${message.role} ${message.error ? 'error' : ''}`} key={index}><span>{message.role === 'user' ? '你' : 'AI'}</span>{message.images?.map((src, i) => <img key={i} src={src} alt="发送的附图" />)}<p>{message.content}</p></article>)}
         {stream && <article className="message assistant"><span>AI</span><p>{stream}</p></article>}
         {busy && !stream && <p className="assistant-wait">正在等待回答…</p>}
@@ -126,9 +125,8 @@ export function Assistant() {
           <button type="button" className="tool-button" onMouseDown={event => event.preventDefault()} onClick={quote}><Quotes size={16} />选中文字</button>
           <label className="tool-button" title="附上一张截图或 JPEG/PNG"><Images size={16} />{attaching ? '处理中' : '附图'}<input type="file" accept="image/jpeg,image/png" hidden onChange={event => { const file = event.target.files?.[0]; if (file) void attach(file); event.target.value = ''; }} /></label>
         </div>
-        {!configured && <p className="assistant-wait">尚未连接 AI。<Link to="/settings">去设置</Link>填写地址、模型和 Key；不连接也可以继续使用教程与色彩手册。</p>}
-        <div className="compose-footer"><span>直连 {( () => { try { return new URL(ai.baseUrl).host; } catch { return '未配置'; } })()} · 最近六轮会带上</span>{busy ? <button type="button" className="danger-button" onClick={event => { event.preventDefault(); abort.current?.abort(); }}><Stop size={15} />停止</button> : <button className="send-button" disabled={!configured || !draft.trim()}><PaperPlaneTilt size={15} />发送</button>}</div>
-        <p className="assistant-footnote">Key 只保存在这个浏览器；请求直接发往你配置的服务商。GitHub Pages 站点没有中转服务器。</p>
+        {!configured && <p className="assistant-wait">未连接 AI · <Link to="/settings">去设置</Link></p>}
+        <div className="compose-footer">{busy ? <button type="button" className="danger-button" onClick={event => { event.preventDefault(); abort.current?.abort(); }}><Stop size={15} />停止</button> : <button className="send-button" disabled={!configured || !draft.trim()}><PaperPlaneTilt size={15} />发送</button>}</div>
       </form>
     </aside>
   </div>;

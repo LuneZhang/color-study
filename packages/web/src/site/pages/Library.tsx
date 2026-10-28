@@ -17,7 +17,7 @@ export function Library() {
   }), [query, topic, paired]);
   const toggle = (id: string) => setFavorites(value => value.includes(id) ? value.filter(item => item !== id) : [...value, id]);
   return <div className="page">
-    <PageHead kicker="LIBRARY · 已核实" title="教程" description="按题材和工具找到原站，先读作者的步骤，再决定要不要跟练。" actions={<span className="count">{tutorials.length} 条</span>} />
+    <PageHead kicker="LIBRARY · 已核实" title="教程" description="按题材、工具与原片状态筛选。" actions={<span className="count">{tutorials.length} 条</span>} />
     <div className="library-tools"><Search value={query} onChange={setQuery} placeholder="搜标题、作者或工具" /><div className="chip-row">
       <button className={topic === 'all' ? 'chip active' : 'chip'} onClick={() => setTopic('all')}>全部</button>
       {(Object.keys(topicMeta) as Topic[]).map(key => <button className={topic === key ? 'chip active' : 'chip'} key={key} onClick={() => setTopic(key)}>{topicMeta[key].label}</button>)}

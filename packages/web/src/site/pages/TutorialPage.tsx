@@ -38,8 +38,7 @@ function TutorialContent({ id }: { id: string }) {
     </header>
     <div className="tutorial-layout">
       <article className="tutorial-body">
-        <section><h2>先把话说明白</h2><p>这里保存的是作者原站的简介、审核记录和原片信息，不是重新写的教程。完整步骤、参数和讲解请回到原站完成，本站不替作者补流程。</p></section>
-        <section><h2>审核记录</h2><p className="meta">审核范围：{{ metadata: '仅简介和元信息', excerpt: '实际选段', content: '公开教学内容' }[item.reviewScope]} · {formatDate(item.reviewedAt)}</p><p>{item.reviewSummary || '尚未记录审核依据。'}</p><p className="fine">这不是“已实测复现”的认证。视频是否完整、当前软件界面是否变化，仍需你在原站确认。</p></section>
+        <section><h2>审核记录</h2><p className="meta">审核范围：{{ metadata: '仅简介和元信息', excerpt: '实际选段', content: '公开教学内容' }[item.reviewScope]} · {formatDate(item.reviewedAt)}</p><p>{item.reviewSummary || '尚未记录审核依据。'}</p></section>
         <section><h2>原片与使用边界</h2>{item.rawStatus === 'paired' ? <><p>{item.rawEvidence}</p><p className="fine">{item.rights}</p></> : <p>{item.rawEvidence || '这条教程没有可核实的配套原片。可以在原站查看作者是否另有素材说明。'}</p>}</section>
         <section className="source-note"><span className="kicker">SOURCE</span><h2>出处</h2><p>{item.author || '作者未注明'} · {new URL(item.url).hostname}</p><External href={item.url} className="text-link">打开原始页面</External></section>
       </article>
@@ -47,7 +46,6 @@ function TutorialContent({ id }: { id: string }) {
         <section className="study-card">
           <div className="study-head"><span className="kicker">MY NOTE</span><span className={`status ${status}`}>{status === 'done' ? '已完成' : status === 'learning' ? '在学' : '未开始'}</span></div>
           <h2>带走一句话</h2>
-          <p className="fine">写你观察到的判断，不抄参数。记录只保存在这个浏览器。</p>
           <textarea value={note} onChange={event => { setNote(event.target.value); setSaved(false); }} rows={7} placeholder="这张照片里，我先注意到了什么？哪一个调整改变了它？" aria-label="学习笔记" />
           <div className="study-actions"><button className="solid-button small" onClick={save}>{saved ? <Check size={15} /> : null}{saved ? '已保存' : '保存记录'}</button></div>
           <div className="status-row" role="group" aria-label="学习状态">{(['none', 'learning', 'done'] as const).map(value => <button key={value} className={status === value ? 'active' : ''} onClick={() => setStatus(value)}>{value === 'none' ? '未开始' : value === 'learning' ? '在学' : '完成'}</button>)}</div>

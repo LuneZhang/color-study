@@ -42,7 +42,6 @@ function Chrome() {
       <div className="rail-footer">
         <button className="rail-ai" onClick={() => setOpen(!open)} aria-expanded={open}><Sparkle size={17} />AI 答疑<small>针对当前页面</small></button>
         <div className="rail-meta"><button className="icon-button" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} aria-label={theme === 'dark' ? '切换到浅色' : '切换到深色'}>{theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}</button><Link className="icon-button" to="/settings" aria-label="设置"><GearSix size={18} /></Link></div>
-        <p className="rail-note">本地记录 · 不上传</p>
       </div>
     </aside>
     <header className="mobile-head">

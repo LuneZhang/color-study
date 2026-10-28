@@ -16,7 +16,7 @@ export function Home() {
       <div className="hero-copy">
         <p className="kicker">A LOCAL STUDY ROOM</p>
         <h1><span className="hero-line">把调色，</span><span className="hero-line">练成自己的判断。</span></h1>
-        <p className="hero-sub">外部教程负责准确步骤，这里负责找到它、拿到原片，并把你的观察留下来。没有排名，没有打卡。</p>
+        <p className="hero-sub">找到值得学的教程，拿到原片，把观察留下来。</p>
         <div className="hero-actions"><Link className="solid-button" to={continuing ? `/library/${continuing.id}` : '/library'}>{continuing ? '继续上次的教程' : '挑一条教程开始'}<ArrowRight size={16} /></Link><button className="quiet-button" onClick={() => setOpen(true)}><Sparkle size={15} />问一句</button></div>
         <div className="hero-topics">{Object.entries(topicMeta).map(([key, value]) => <span key={key}><i style={{ background: value.color }} />{value.label}<em>{value.note}</em></span>)}</div>
       </div>
@@ -51,6 +51,6 @@ export function Home() {
       <div><p className="kicker">COLOR ATLAS</p><h2>先会看，再会调。</h2><p>曲线、HSL、白平衡、蒙版和色轮，用一张张有来源的小卡查清楚。它们不是配方，是判断的依据。</p><Link to="/atlas" className="text-link">打开色彩手册 <ArrowRight size={14} /></Link></div>
       <div className="atlas-teaser-links"><Link to="/atlas?q=曲线"><BookOpen size={16} />曲线在重映射什么</Link><Link to="/atlas?q=HSL"><Palette size={16} />HSL 不是三个“更鲜艳”</Link><Link to="/atlas?q=互补"><Sparkle size={16} />互补色与滑块的距离</Link></div>
     </section>
-    <footer className="site-foot"><span>调色书房 · 本地优先的调色学习站</span><span>内容来源与许可随每条教程记录</span><span>{new Date().getFullYear()}</span></footer>
+    <footer className="site-foot"><span>调色书房</span><span>{new Date().getFullYear()}</span></footer>
   </div>;
 }
