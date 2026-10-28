@@ -1,17 +1,22 @@
-import { lazy, Suspense, useEffect } from 'react';
+import { lazy, Suspense, useEffect, type ComponentType } from 'react';
 import { HashRouter, Link, NavLink, Route, Routes, useLocation } from 'react-router-dom';
 import { BookOpen, Compass, House, Notebook, Palette, GearSix, Sparkle, Sun, Moon } from '@phosphor-icons/react';
 import { AssistantProvider, useAssistant } from './AssistantContext';
 import { useNotes, useStatuses, useTheme } from './store';
 import { tutorials } from './data';
-const Home = lazy(() => import('./pages/Home').then(module => ({ default: module.Home })));
-const Library = lazy(() => import('./pages/Library').then(module => ({ default: module.Library })));
-const TutorialPage = lazy(() => import('./pages/TutorialPage').then(module => ({ default: module.TutorialPage })));
-const Atlas = lazy(() => import('./pages/Atlas').then(module => ({ default: module.Atlas })));
-const NotebookPage = lazy(() => import('./pages/NotebookPage').then(module => ({ default: module.NotebookPage })));
-const DiscoverPage = lazy(() => import('./pages/DiscoverPage').then(module => ({ default: module.DiscoverPage })));
-const SettingsPage = lazy(() => import('./pages/SettingsPage').then(module => ({ default: module.SettingsPage })));
-const Assistant = lazy(() => import('./Assistant').then(module => ({ default: module.Assistant })));
+type PageModule = { default: ComponentType };
+const lazyPage = (factory: () => Promise<PageModule>) => lazy(() => factory().catch(error => {
+  if (!sessionStorage.getItem('cs:chunk-retry')) { sessionStorage.setItem('cs:chunk-retry', '1'); location.reload(); return new Promise<PageModule>(() => {}); }
+  throw error;
+}));
+const Home = lazyPage(() => import('./pages/Home').then(module => ({ default: module.Home })));
+const Library = lazyPage(() => import('./pages/Library').then(module => ({ default: module.Library })));
+const TutorialPage = lazyPage(() => import('./pages/TutorialPage').then(module => ({ default: module.TutorialPage })));
+const Atlas = lazyPage(() => import('./pages/Atlas').then(module => ({ default: module.Atlas })));
+const NotebookPage = lazyPage(() => import('./pages/NotebookPage').then(module => ({ default: module.NotebookPage })));
+const DiscoverPage = lazyPage(() => import('./pages/DiscoverPage').then(module => ({ default: module.DiscoverPage })));
+const SettingsPage = lazyPage(() => import('./pages/SettingsPage').then(module => ({ default: module.SettingsPage })));
+const Assistant = lazyPage(() => import('./Assistant').then(module => ({ default: module.Assistant })));
 
 const nav = [
   { to: '/', label: '首页', icon: House, end: true },
@@ -28,6 +33,7 @@ function Chrome() {
   const [notes] = useNotes(); const [statuses] = useStatuses();
   const location = useLocation();
   useEffect(() => { document.documentElement.dataset.theme = theme; }, [theme]);
+  useEffect(() => { const timer = setTimeout(() => sessionStorage.removeItem('cs:chunk-retry'), 3000); return () => clearTimeout(timer); }, []);
   useEffect(() => { window.scrollTo({ top: 0, behavior: 'auto' }); }, [location.pathname]);
   const studying = tutorials.filter(item => statuses[item.id] === 'learning' || notes[item.id]).slice(0, 4);
   return <div className={`shell ${open ? 'assistant-open' : ''}`}>
