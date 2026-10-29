@@ -138,6 +138,8 @@ h1, h2, h3 { font-weight: 500; letter-spacing: -0.025em; line-height: 1.2; }
 .path-strip h2 { font-size: 13px; font-weight: 500; letter-spacing: -.01em; }
 .path-strip p { color: var(--muted); font-size: 12px; line-height: 1.7; margin-top: 7px; max-width: 260px; }
 .home-lower { display: grid; grid-template-columns: 1fr 1fr; gap: 46px; padding: 37px 0 0; }
+.home-lower > * { min-width: 0; }
+.home-section { min-width: 0; }
 .section-line { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 8px; }
 .section-line h2 { font-size: 14px; font-weight: 500; letter-spacing: -.01em; }
 .section-line a { color: var(--muted); font-size: 11px; display: inline-flex; align-items: center; gap: 4px; }
@@ -178,16 +180,16 @@ h1, h2, h3 { font-weight: 500; letter-spacing: -0.025em; line-height: 1.2; }
 .search-field input { width: 100%; border: 0; outline: 0; background: transparent; min-width: 120px; padding: 0; font-size: 13px; }
 .search-field button { border: 0; background: none; color: var(--faint); padding: 0; min-height: 22px; font-size: 18px; }
 .chip-row { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; }
-.chip { border: 1px solid transparent; background: transparent; color: var(--muted); padding: 5px 9px; min-height: 29px; border-radius: 3px; font-size: 11.5px; }
+.chip { flex: 0 0 auto; border: 1px solid transparent; background: transparent; color: var(--muted); padding: 5px 9px; min-height: 29px; border-radius: 3px; font-size: 11.5px; }
 .chip:hover { background: var(--surface-2); color: var(--text); }
 .chip.active { color: var(--text); border-color: var(--border); background: var(--surface-2); }
 .tutorial-list { border-top: 1px solid var(--border); }
-.tutorial-item { display: grid; grid-template-columns: 38px minmax(0, 1fr) 134px; gap: 18px; padding: 24px 0 25px; border-bottom: 1px solid var(--border); position: relative; }
-.tutorial-item::before { content: ""; position: absolute; left: 0; top: 24px; bottom: 25px; width: 2px; background: var(--topic); opacity: .75; }
+.tutorial-item { display: grid; grid-template-columns: 34px minmax(0, 1fr) 134px; gap: 16px; padding: 24px 0 25px 22px; border-bottom: 1px solid var(--border); position: relative; }
+.tutorial-item::before { content: ""; position: absolute; left: 4px; top: 27px; bottom: 27px; width: 1px; background: var(--topic); opacity: .8; }
 .tutorial-item.topic-landscape { --topic: #8caa94; }
 .tutorial-item.topic-portrait { --topic: #c0927f; }
 .tutorial-item.topic-general { --topic: #97a1ad; }
-.item-index { font-family: var(--mono); font-size: 10px; color: var(--faint); padding-top: 4px; }
+.item-index { font-family: var(--mono); font-size: 10px; color: var(--faint); padding-top: 4px; line-height: 1.4; }
 .item-main { min-width: 0; }
 .item-main h2 { font-size: 21px; letter-spacing: -.035em; line-height: 1.25; margin-top: 7px; }
 .item-main h2 a:hover { color: var(--accent); }
@@ -268,7 +270,7 @@ h1, h2, h3 { font-weight: 500; letter-spacing: -0.025em; line-height: 1.2; }
 .atlas-layout { display: grid; grid-template-columns: 170px minmax(0, 1fr); gap: 44px; padding-top: 25px; }
 .atlas-index { position: sticky; top: 30px; align-self: start; display: flex; flex-direction: column; }
 .index-title { font-family: var(--mono); color: var(--faint); font-size: 9px; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 8px; }
-.atlas-index button { display: flex; justify-content: space-between; border: 0; border-left: 1px solid var(--border); background: none; color: var(--muted); padding: 7px 9px; min-height: 32px; font-size: 11.5px; text-align: left; }
+.atlas-index button { flex: 0 0 auto; white-space: nowrap; display: flex; justify-content: space-between; border: 0; border-left: 1px solid var(--border); background: none; color: var(--muted); padding: 7px 9px; min-height: 32px; font-size: 11.5px; text-align: left; }
 .atlas-index button span { color: var(--faint); font-family: var(--mono); font-size: 9px; }
 .atlas-index button:hover, .atlas-index button.active { color: var(--text); border-left-color: var(--accent); }
 .atlas-tools { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 15px; }
@@ -469,6 +471,9 @@ h1, h2, h3 { font-weight: 500; letter-spacing: -0.025em; line-height: 1.2; }
   .entry-foot { flex-direction: column; align-items: flex-start; }
   .settings-actions .quiet-button { flex: 1; }
   .atlas-tools { flex-wrap: wrap; gap: 8px; }
+  .discover-feed .section-line { flex-wrap: wrap; align-items: flex-start; }
+  .discover-feed .section-line .chip-row { width: 100%; margin-top: 7px; }
+  .atlas-index { padding-right: 2px; }
   .atlas-tools .search-field { flex: 1 1 100%; }
   .assistant-panel { width: 100%; }
   .compose-tools { grid-template-columns: 1fr 1fr; }
